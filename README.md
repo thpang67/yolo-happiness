@@ -1,4 +1,3 @@
 # yolo-happiness
 Creating a Hello World repo for WebHook training
-
-Adding more content to watch a push request generate for my webhook.
+Removed content on new branch. Ready to generate a merge request and have someone review my code.
