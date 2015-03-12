@@ -3,7 +3,7 @@
 # back the command executed along with a few other bits. It will
 # parse the JSON item returned.
 #
-# NOTE: What is my email? yes it is.
+# NOTE: What is my email?
 #
 
 # required modules
