@@ -79,6 +79,7 @@ post '/events' do
 
       items = ""
 
+=begin
       # Repository action from 'push'
       actions = ['added', 'removed', 'modified']
       actions.each do |raction|
@@ -97,5 +98,6 @@ post '/events' do
                         repo, raction, message, items)
           end
       end
+=end
   end
 end
