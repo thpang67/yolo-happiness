@@ -60,19 +60,19 @@ post '/events' do
   #
   # NOTE: There may be more than just 1 element. Should really to an .each here.
   #
-  if (!push['commits'].empty?)
+  push['commits'].each do |commit|
       # Message from push event.
-      message   = push['commits'][0]['message']
+      message   = commit['message']
 
       # Author information.
-      aname     = push['commits'][0]['author']['name']
-      aemail    = push['commits'][0]['author']['email']
-      ausername = push['commits'][0]['author']['username']
+      aname     = commit['author']['name']
+      aemail    = commit['author']['email']
+      ausername = commit['author']['username']
 
       # Committer information.
-      cname     = push['commits'][0]['committer']['name']
-      cemail    = push['commits'][0]['committer']['email']
-      cusername = push['commits'][0]['committer']['username']
+      cname     = commit['committer']['name']
+      cemail    = commit['committer']['email']
+      cusername = commit['committer']['username']
 
       # Repository information
       repo      = push['repository']['name']
@@ -84,9 +84,9 @@ post '/events' do
       # NOTE: This only really produces output for one commit
       #       need to create a more robust logic here.
       #
-      if (!push['commits'][0]['added'].empty?)
+      if (!commit['added'].empty?)
         action = "added"
-        push['commits'][0]['added'].each do |item|
+        commit['added'].each do |item|
            if (items.size > 0)
              items += ", " + item
            else
@@ -95,9 +95,9 @@ post '/events' do
         end
       end
 
-      if (!push['commits'][0]['removed'].empty?)
+      if (!commit['removed'].empty?)
         action = "removed"
-        push['commits'][0]['removed'].each do |item|
+        commit['removed'].each do |item|
            if (items.size > 0)
              items += ", " + item
            else
@@ -106,9 +106,9 @@ post '/events' do
         end
       end
 
-      if (!push['commits'][0]['modified'].empty?)
+      if (!commit['modified'].empty?)
         action = "modified"
-        push['commits'][0]['modified'].each do |item|
+        commit['modified'].each do |item|
            if (items.size > 0)
              items += ", " + item
            else
@@ -118,7 +118,7 @@ post '/events' do
       end
  
       # Message from 'push' command
-      push_message  = push['commits'][0]['message']
+      push_message  = commit['message']
 
       sendEmail("#{cname} <#{cemail}>", "#{aname} <#{aemail}>",
                 repo, action, message, items)
