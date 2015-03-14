@@ -54,7 +54,7 @@ post '/events' do
   puts ""
 
   push['commits'].each do |commit|
-    putsh "#{commit}"
+    puts "#{commit}"
   end
 
   #
