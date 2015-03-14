@@ -29,14 +29,14 @@ MIME-Version: 1.0
 Content-type: text/html
 Subject: Push request for : #{repo} with action: #{action}
 
-<b>This e-mail is to inform you of a 'push' event.</b>
+<h2>This e-mail is to inform you of a 'push' event.</h2>
 
-<h2>Information about request</h2>
+<h3>Information about request</h3>
 <ul>
-  <li>Repository : #{repo}</li>
-  <li>Action     : #{action}</li>
-  <li>Message    : #{message}</li>
-  <li>Items      : #{items}</li>
+  <li>Repository : <code>#{repo}</code></li>
+  <li>Action     : <code>#{action}</code></li>
+  <li>Message    : <code>#{message}</code></li>
+  <li>Items      : <code>#{items}</code></li>
 </ul>
 MESSAGE_END
 
@@ -46,11 +46,16 @@ MESSAGE_END
 
 end
 
+# Parse push event
 post '/events' do
   push = JSON.parse(request.body.read)
 
   puts "#{push['commits']}"
   puts ""
+
+  push['commits'].each do |commit|
+    putsh "#{commit}"
+  end
 
   #
   # NOTE: There may be more than just 1 element. Should really to an .each here.
