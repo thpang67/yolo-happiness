@@ -12,6 +12,7 @@ require 'json'
 require 'net/smtp'
 require 'octokit'
 
+# send email from committer -> author
 def sendEmail(from, to, repo, action, message, items)
     
     # variables
@@ -22,6 +23,7 @@ def sendEmail(from, to, repo, action, message, items)
     @message = message
     @items   = items
     
+    # HTML message to send
     message = <<MESSAGE_END
 From: #{from}
 To: #{to}
@@ -40,9 +42,10 @@ Subject: Push request for : #{repo} with action: #{action}
 </ul>
 MESSAGE_END
 
-  Net::SMTP.start('localhost') do |smtp|
-    smtp.send_message message, from, to
-  end
+    # Send email to localhost with server running.
+    Net::SMTP.start('localhost') do |smtp|
+      smtp.send_message message, from, to
+    end
 
 end
 
@@ -50,15 +53,9 @@ end
 post '/events' do
   push = JSON.parse(request.body.read)
 
-  puts "#{push['commits']}"
-  puts ""
-
-  push['commits'].each do |commit|
-    puts "#{commit}"
-  end
-
   #
-  # NOTE: There may be more than just 1 element. Should really to an .each here.
+  # cycle through all items found as there may be more than
+  # one, add, remove, update, etc.
   #
   push['commits'].each do |commit|
       # Message from push event.
@@ -80,50 +77,24 @@ post '/events' do
       items = ""
 
       # Repository action from 'push'
-      # 
-      # NOTE: This only really produces output for one commit
-      #       need to create a more robust logic here.
-      #
-      if (!commit['added'].empty?)
-        action = "added"
-        commit['added'].each do |item|
-           if (items.size > 0)
-             items += ", " + item
-           else
-             items = item
-           end
-        end
-      end
+      actions = ['added', 'removed', 'modified']
+      actions.each do |raction|
+          if (!commit[raction].empty?)
+              action = "#{raction}"
+              commit[raction].each do |item|
+                if (items.size > 0)
+                   items += ", " + item
+                else
+                     items = item
+                end
+              end
 
-      if (!commit['removed'].empty?)
-        action = "removed"
-        commit['removed'].each do |item|
-           if (items.size > 0)
-             items += ", " + item
-           else
-             items = item
-           end
-        end
-      end
+              # Message from 'push' command
+              push_message  = commit['message']
 
-      if (!commit['modified'].empty?)
-        action = "modified"
-        commit['modified'].each do |item|
-           if (items.size > 0)
-             items += ", " + item
-           else
-             items = item
-           end
-        end
+              sendEmail("#{cname} <#{cemail}>", "#{aname} <#{aemail}>",
+                        repo, action, message, items)
+          end
       end
- 
-      # Message from 'push' command
-      push_message  = commit['message']
-
-      sendEmail("#{cname} <#{cemail}>", "#{aname} <#{aemail}>",
-                repo, action, message, items)
   end
-  
-  puts ""
-
 end
