@@ -81,11 +81,12 @@ post '/events' do
       actions.each do |raction|
           if (!commit[raction].empty?)
               action = "#{raction}"
+              puts "Action: #{action}"
               commit[raction].each do |item|
                 if (items.size > 0)
                    items += ", " + item
                 else
-                     items = item
+                   items = item
                 end
               end
 
