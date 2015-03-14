@@ -82,21 +82,33 @@ post '/events' do
       if (!push['commits'][0]['added'].empty?)
         action = "added"
         push['commits'][0]['added'].each do |item|
-           items += item + " "
+           if (items.size > 0)
+             items += item + ","
+           else
+             items = item
+           end
         end
       end
 
       if (!push['commits'][0]['removed'].empty?)
         action = "removed"
         push['commits'][0]['removed'].each do |item|
-           items += item + " "
+           if (items.size > 0)
+             items += item + ","
+           else
+             items = item
+           end
         end
       end
 
       if (!push['commits'][0]['modified'].empty?)
         action = "modified"
         push['commits'][0]['modified'].each do |item|
-           items += item + " "
+           if (items.size > 0)
+             items += item + ","
+           else
+             items = item
+           end
         end
       end
  
