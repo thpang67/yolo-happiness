@@ -83,7 +83,7 @@ post '/events' do
         action = "added"
         push['commits'][0]['added'].each do |item|
            if (items.size > 0)
-             items += item + ","
+             items += ", " + item
            else
              items = item
            end
@@ -94,7 +94,7 @@ post '/events' do
         action = "removed"
         push['commits'][0]['removed'].each do |item|
            if (items.size > 0)
-             items += item + ","
+             items += ", " + item
            else
              items = item
            end
@@ -105,7 +105,7 @@ post '/events' do
         action = "modified"
         push['commits'][0]['modified'].each do |item|
            if (items.size > 0)
-             items += item + ","
+             items += ", " + item
            else
              items = item
            end
