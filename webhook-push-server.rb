@@ -82,10 +82,9 @@ post '/events' do
       # Repository action from 'push'
       actions = ['added', 'removed', 'modified']
       actions.each do |raction|
-          puts raction
+          puts "#{raction}"
           if (!commit[raction].empty?)
-              action = "#{raction}"
-              puts "Action: #{action}"
+              puts "Action: #{raction}"
               commit[raction].each do |item|
                 if (items.size > 0)
                    items += ", " + item
@@ -94,11 +93,8 @@ post '/events' do
                 end
               end
 
-              # Message from 'push' command
-              push_message  = commit['message']
-
               sendEmail("#{cname} <#{cemail}>", "#{aname} <#{aemail}>",
-                        repo, action, message, items)
+                        repo, raction, message, items)
           end
       end
   end
