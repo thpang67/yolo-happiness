@@ -53,14 +53,14 @@ end
 post '/events' do
   push = JSON.parse(request.body.read)
 
-  puts push['commits']
+  puts "#{push['commits']}"
 
   #
   # cycle through all items found as there may be more than
   # one, add, remove, update, etc.
   #
   push['commits'].each do |commit|
-      puts commit
+      puts "#{commit}"
       # Message from push event.
       message   = commit['message']
 
