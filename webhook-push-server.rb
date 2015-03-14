@@ -25,16 +25,19 @@ def sendEmail(from, to, repo, action, message, items)
     message = <<MESSAGE_END
 From: #{from}
 To: #{to}
-Subject: #{repo} action: #{action}
+MIME-Version: 1.0
+Content-type: text/html
+Subject: Push request for : #{repo} with action: #{action}
 
-This email is to inform you of a 'push' event.
+<b>This e-mail is to inform you of a 'push' event.</b>
 
-Repository : #{repo}
-Action     : #{action}
-
-Message    : #{message}
-
-Items      : #{items}
+<h2>Information about request</h2>
+<ul>
+  <li>Repository : #{repo}</li>
+  <li>Action     : #{action}</li>
+  <li>Message    : #{message}</li>
+  <li>Items      : #{items}</li>
+</ul>
 MESSAGE_END
 
   Net::SMTP.start('localhost') do |smtp|
