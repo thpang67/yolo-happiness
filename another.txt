@@ -1,7 +1,0 @@
-another file
-    file
-        fo
-            bar
-        baz
-    elif
-end
