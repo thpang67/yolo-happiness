@@ -14,17 +14,9 @@ require 'octokit'
 
 # send email from committer -> author
 def sendEmail(from, to, repo, action, message, items)
-    
-    # variables
-    @from    = from
-    @to      = to
-    @repo    = repo
-    @action  = action
-    @message = message
-    @items   = items
-    
+
     # HTML message to send
-    message = <<MESSAGE_END
+    email = <<EMAIL_END
 From: #{from}
 To: #{to}
 MIME-Version: 1.0
@@ -40,11 +32,11 @@ Subject: Push request for : #{repo} with action: #{action}
   <li>Message    : <code>#{message}</code></li>
   <li>Items      : <code>#{items}</code></li>
 </ul>
-MESSAGE_END
+EMAIL_END
 
     # Send email to localhost with server running.
     Net::SMTP.start('localhost') do |smtp|
-      smtp.send_message message, from, to
+      smtp.send_message email, from, to
     end
 
 end
@@ -53,51 +45,60 @@ end
 post '/events' do
   push = JSON.parse(request.body.read)
 
-  puts "#{push['commits']}"
+  # puts "#{push['commits']}"
+
+  # Repository information
+  repo      = push['repository']['name']
 
   #
   # cycle through all items found as there may be more than
   # one, add, remove, update, etc.
   #
-  push['commits'].each do |commit|
-      puts "#{commit}"
-      # Message from push event.
-      message   = commit['message']
+  # for commit in push['commits']
+  begin
+	  push['commits'].each do |commit|
+	      # puts "#{commit}"
+	      # Message from push event.
+	      message   = commit['message']
 
-      # Author information.
-      aname     = commit['author']['name']
-      aemail    = commit['author']['email']
-      ausername = commit['author']['username']
+	      # Author information.
+	      aname     = commit['author']['name']
+	      aemail    = commit['author']['email']
+	      ausername = commit['author']['username']
 
-      # Committer information.
-      cname     = commit['committer']['name']
-      cemail    = commit['committer']['email']
-      cusername = commit['committer']['username']
+	      # Committer information.
+	      cname     = commit['committer']['name']
+	      cemail    = commit['committer']['email']
+	      cusername = commit['committer']['username']
 
-      # Repository information
-      repo      = push['repository']['name']
+	      # Repository action from 'push'
+              items = ""
+	      actions = ['added', 'removed', 'modified']
+	      actions.each do |action|
 
-      items = ""
+                  if (!commit[action].empty?)
+		      puts "#{action}"
+                      puts "#{commit[action]}"
 
-=begin
-      # Repository action from 'push'
-      actions = ['added', 'removed', 'modified']
-      actions.each do |raction|
-          puts "#{raction}"
-          if (!commit[raction].empty?)
-              puts "Action: #{raction}"
-              commit[raction].each do |item|
-                if (items.size > 0)
-                   items += ", " + item
-                else
-                   items = item
-                end
+		      commit[action].each do |item|
+		          if (items.size > 0)
+                              items += ", " + item
+                          else
+                              items = item
+                          end
+                      end
+
+                      puts "Sending email for #{action}"
+                      sendEmail("#{cname} <#{cemail}>", "#{aname} <#{aemail}>",
+                                repo, action, message, items)
+                  end
+
+                  items = ""
               end
-
-              sendEmail("#{cname} <#{cemail}>", "#{aname} <#{aemail}>",
-                        repo, raction, message, items)
-          end
-      end
-=end
+	  end
+  rescue
+      puts "Issue with commit: #{commit}"
+  else
+      puts "It worked!!"
   end
 end
