@@ -31,7 +31,23 @@ post '/events' do
   #     puts commit
   # end
 
-  puts commits
+  # Test what is coming back in commits
+  if (commits.kind_of?(Array))
+    puts "Array!!"
+    begin
+      commits.each do |commit|
+        puts "Commit: #{commit}"
+      end
+    rescue
+      puts "Something went wrong processing our commit statement."
+    else
+      puts "It worked!!"
+    end
+  elsif (commits.kind_of?(Hash))
+    puts "Hash!!"
+  elsif (commits.kind_of?(Object))
+    puts "Object!!"
+  end
 
 =begin
 
