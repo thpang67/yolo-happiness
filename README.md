@@ -1,3 +1,4 @@
+[![Stories in Ready](https://badge.waffle.io/thpang67/yolo-happiness.png?label=ready&title=Ready)](https://waffle.io/thpang67/yolo-happiness)
 # yolo-happiness
 Creating a Hello World repo for WebHook training!!!
 
